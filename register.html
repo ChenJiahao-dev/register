@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预约签到</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            padding: 15px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            color: #c00;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .header small {
+            color: #666;
+            font-size: 12px;
+        }
+        .sign-card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .sign-time {
+            color: #008866;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .sign-success {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #008866;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .sign-success .check-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #008866;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+        }
+        .sign-success .check-icon svg {
+            width: 16px;
+            height: 12px;
+            fill: #fff;
+        }
+        .sign-info {
+            text-align: left;
+            color: #333;
+            font-size: 14px;
+            line-height: 2;
+            margin-bottom: 10px;
+        }
+        .user-info {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 14px;
+            line-height: 2;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            height: 44px;
+            line-height: 44px;
+            text-align: center;
+            background-color: #c00;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .modal-content h3 {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .form-item {
+            margin-bottom: 15px;
+        }
+        .form-item label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .form-item input, .form-item select {
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-group button {
+            flex: 1;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn-save {
+            background-color: #c00;
+            color: #fff;
+        }
+        .btn-cancel {
+            background-color: #eee;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>预约签到</h1>
+        <small>eportal.hnu.edu.cn</small>
+    </div>
+
+    <div class="sign-card">
+        <div class="sign-time" id="current-time">2025-12-26<br>19:14:31</div>
+        <div class="sign-success">
+            <!-- 替换为带对号的图标 -->
+            <div class="check-icon">
+                <svg viewBox="0 0 16 12">
+                    <path d="M2 6l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            签到成功
+        </div>
+        <div class="sign-info">
+            签到时间: <span id="sign-time">2025-12-26 19:14:19</span><br>
+            预约资源: <span id="reserve-resource">南校区健身房</span><br>
+            预约时段: <span id="reserve-time">20:00-21:30</span>
+        </div>
+    </div>
+
+    <div class="user-info">
+        姓名: <span id="username">陈佳豪</span><br>
+        学工号: <span id="student-id">S2402W0354</span><br>
+        部门: <span id="department">机械与运载工程学院</span>
+    </div>
+
+    <button class="btn" id="check-reserve">查看我的预约</button>
+
+    <!-- 修改预约弹窗 -->
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <h3>修改预约信息</h3>
+            <div class="form-item">
+                <label for="edit-time">预约时段</label>
+                <select id="edit-time">
+                    <option value="20:00-21:30">20:00-21:30</option>
+                    <option value="18:20-19:50">18:20-19:50</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <label for="edit-name">姓名</label>
+                <input type="text" id="edit-name" placeholder="请输入姓名">
+            </div>
+            <div class="form-item">
+                <label for="edit-student-id">学工号</label>
+                <input type="text" id="edit-student-id" placeholder="请输入学工号">
+            </div>
+            <div class="form-item">
+                <label for="edit-department">部门</label>
+                <input type="text" id="edit-department" placeholder="请输入部门">
+            </div>
+            <div class="btn-group">
+                <button class="btn-save" id="save-btn">保存</button>
+                <button class="btn-cancel" id="cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取元素
+        const checkReserveBtn = document.getElementById('check-reserve');
+        const editModal = document.getElementById('edit-modal');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const editTime = document.getElementById('edit-time');
+        const editName = document.getElementById('edit-name');
+        const editStudentId = document.getElementById('edit-student-id');
+        const editDepartment = document.getElementById('edit-department');
+        const currentTimeEl = document.getElementById('current-time');
+        const reserveTimeEl = document.getElementById('reserve-time');
+        const usernameEl = document.getElementById('username');
+        const studentIdEl = document.getElementById('student-id');
+        const departmentEl = document.getElementById('department');
+
+        // 格式化时间为指定格式：YYYY-MM-DD<br>HH:mm:ss
+        function formatDateTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day}<br>${hours}:${minutes}:${seconds}`;
+        }
+
+        // 实时更新当前时间
+        function updateCurrentTime() {
+            const now = new Date();
+            currentTimeEl.innerHTML = formatDateTime(now);
+        }
+        // 初始化执行一次
+        updateCurrentTime();
+        // 每秒更新一次
+        setInterval(updateCurrentTime, 1000);
+
+        // 打开修改弹窗
+        checkReserveBtn.addEventListener('click', () => {
+            editTime.value = reserveTimeEl.innerText;
+            editName.value = usernameEl.innerText;
+            editStudentId.value = studentIdEl.innerText;
+            editDepartment.value = departmentEl.innerText;
+            editModal.style.display = 'flex';
+        });
+
+        // 关闭弹窗
+        cancelBtn.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+
+        // 保存修改
+        saveBtn.addEventListener('click', () => {
+            reserveTimeEl.innerText = editTime.value;
+            usernameEl.innerText = editName.value;
+            studentIdEl.innerText = editStudentId.value;
+            departmentEl.innerText = editDepartment.value;
+            editModal.style.display = 'none';
+            alert('预约信息修改成功！');
+        });
+
+        // 点击弹窗外区域关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === editModal) {
+                editModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
