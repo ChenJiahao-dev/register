@@ -49,10 +49,11 @@
             font-weight: bold;
             margin-bottom: 20px;
         }
+        /* 调整为目标对号样式：绿色圆形+白色对号 */
         .sign-success .check-icon {
             width: 24px;
             height: 24px;
-            background-color: #008866;
+            background-color: #00B358; /* 匹配目标绿色 */
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -167,9 +168,10 @@
     <div class="sign-card">
         <div class="sign-time" id="current-time">2025-12-26<br>19:14:31</div>
         <div class="sign-success">
+            <!-- 目标样式的对号图标 -->
             <div class="check-icon">
                 <svg viewBox="0 0 16 12">
-                    <path d="M2 6l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 6l4 4 8-8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
             签到成功
