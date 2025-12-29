@@ -49,11 +49,11 @@
             font-weight: bold;
             margin-bottom: 20px;
         }
-        /* 调整为目标对号样式：绿色圆形+白色对号 */
+        /* 匹配目标的对号样式：粗线条+居中 */
         .sign-success .check-icon {
             width: 24px;
             height: 24px;
-            background-color: #00B358; /* 匹配目标绿色 */
+            background-color: #008866;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -61,9 +61,8 @@
             margin-right: 8px;
         }
         .sign-success .check-icon svg {
-            width: 16px;
-            height: 12px;
-            fill: #fff;
+            width: 14px;
+            height: 10px;
         }
         .sign-info {
             text-align: left;
@@ -168,10 +167,10 @@
     <div class="sign-card">
         <div class="sign-time" id="current-time">2025-12-26<br>19:14:31</div>
         <div class="sign-success">
-            <!-- 目标样式的对号图标 -->
+            <!-- 目标样式的粗线条对号 -->
             <div class="check-icon">
-                <svg viewBox="0 0 16 12">
-                    <path d="M3 6l4 4 8-8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <svg viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 5L5 8L12 2" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
             签到成功
@@ -179,13 +178,13 @@
         <div class="sign-info">
             签到时间: <span id="sign-time">2025-12-26 19:14:19</span><br>
             预约资源: <span id="reserve-resource">南校区健身房</span><br>
-            预约时段: <span id="reserve-time">20:00-21:30</span>
+            预约时段: <span id="reserve-time">18:20-19:50</span>
         </div>
     </div>
 
     <div class="user-info">
-        姓名: <span id="username">陈佳豪</span><br>
-        学工号: <span id="student-id">S2402W0354</span><br>
+        姓名: <span id="username">陈</span><br>
+        学工号: <span id="student-id">S2402W03</span><br>
         部门: <span id="department">机械与运载工程学院</span>
     </div>
 
@@ -197,8 +196,9 @@
             <div class="form-item">
                 <label for="edit-time">预约时段</label>
                 <select id="edit-time">
-                    <option value="20:00-21:30">20:00-21:30</option>
+                    <option value="16:30-18:00">16:30-18:00</option>
                     <option value="18:20-19:50">18:20-19:50</option>
+                    <option value="20:00-21:30">20:00-21:30</option>
                 </select>
             </div>
             <div class="form-item">
@@ -234,8 +234,21 @@
         const usernameEl = document.getElementById('username');
         const studentIdEl = document.getElementById('student-id');
         const departmentEl = document.getElementById('department');
+        const signTimeEl = document.getElementById('sign-time');
 
+        // 格式化时间为指定格式：YYYY-MM-DD HH:mm:ss
         function formatDateTime(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+
+        // 格式化时间为“日期<br>时间”格式（用于当前时间显示）
+        function formatDateTimeSplit(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
@@ -245,13 +258,21 @@
             return `${year}-${month}-${day}<br>${hours}:${minutes}:${seconds}`;
         }
 
+        // 页面加载时，记录当前时间为“签到时间”（仅执行一次）
+        window.onload = function() {
+            const signTime = new Date();
+            signTimeEl.innerText = formatDateTime(signTime);
+        }
+
+        // 实时更新当前时间显示
         function updateCurrentTime() {
             const now = new Date();
-            currentTimeEl.innerHTML = formatDateTime(now);
+            currentTimeEl.innerHTML = formatDateTimeSplit(now);
         }
         updateCurrentTime();
         setInterval(updateCurrentTime, 1000);
 
+        // 打开修改弹窗
         checkReserveBtn.addEventListener('click', () => {
             editTime.value = reserveTimeEl.innerText;
             editName.value = usernameEl.innerText;
@@ -260,10 +281,12 @@
             editModal.style.display = 'flex';
         });
 
+        // 关闭弹窗
         cancelBtn.addEventListener('click', () => {
             editModal.style.display = 'none';
         });
 
+        // 保存修改
         saveBtn.addEventListener('click', () => {
             reserveTimeEl.innerText = editTime.value;
             usernameEl.innerText = editName.value;
@@ -273,6 +296,7 @@
             alert('预约信息修改成功！');
         });
 
+        // 点击弹窗外区域关闭
         window.addEventListener('click', (e) => {
             if (e.target === editModal) {
                 editModal.style.display = 'none';
