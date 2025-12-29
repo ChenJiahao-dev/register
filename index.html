@@ -167,7 +167,6 @@
     <div class="sign-card">
         <div class="sign-time" id="current-time">2025-12-26<br>19:14:31</div>
         <div class="sign-success">
-            <!-- 替换为带对号的图标 -->
             <div class="check-icon">
                 <svg viewBox="0 0 16 12">
                     <path d="M2 6l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -183,14 +182,13 @@
     </div>
 
     <div class="user-info">
-        姓名: <span id="username">姓名>xing'm<br>
-        学工号: <span id="student-id">学工号>xue'go<br>
-        部门: <span id="department">学院</span>
+        姓名: <span id="username">陈佳豪</span><br>
+        学工号: <span id="student-id">S2402W0354</span><br>
+        部门: <span id="department">机械与运载工程学院</span>
     </div>
 
     <button class="btn" id="check-reserve">查看我的预约</button>
 
-    <!-- 修改预约弹窗 -->
     <div class="modal" id="edit-modal">
         <div class="modal-content">
             <h3>修改预约信息</h3>
@@ -221,7 +219,6 @@
     </div>
 
     <script>
-        // 获取元素
         const checkReserveBtn = document.getElementById('check-reserve');
         const editModal = document.getElementById('edit-modal');
         const cancelBtn = document.getElementById('cancel-btn');
@@ -236,7 +233,6 @@
         const studentIdEl = document.getElementById('student-id');
         const departmentEl = document.getElementById('department');
 
-        // 格式化时间为指定格式：YYYY-MM-DD<br>HH:mm:ss
         function formatDateTime(date) {
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -247,17 +243,13 @@
             return `${year}-${month}-${day}<br>${hours}:${minutes}:${seconds}`;
         }
 
-        // 实时更新当前时间
         function updateCurrentTime() {
             const now = new Date();
             currentTimeEl.innerHTML = formatDateTime(now);
         }
-        // 初始化执行一次
         updateCurrentTime();
-        // 每秒更新一次
         setInterval(updateCurrentTime, 1000);
 
-        // 打开修改弹窗
         checkReserveBtn.addEventListener('click', () => {
             editTime.value = reserveTimeEl.innerText;
             editName.value = usernameEl.innerText;
@@ -266,12 +258,10 @@
             editModal.style.display = 'flex';
         });
 
-        // 关闭弹窗
         cancelBtn.addEventListener('click', () => {
             editModal.style.display = 'none';
         });
 
-        // 保存修改
         saveBtn.addEventListener('click', () => {
             reserveTimeEl.innerText = editTime.value;
             usernameEl.innerText = editName.value;
@@ -281,7 +271,6 @@
             alert('预约信息修改成功！');
         });
 
-        // 点击弹窗外区域关闭
         window.addEventListener('click', (e) => {
             if (e.target === editModal) {
                 editModal.style.display = 'none';
@@ -289,5 +278,4 @@
         });
     </script>
 </body>
-
 </html>
